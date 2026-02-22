@@ -127,6 +127,7 @@ import AdaptiveIcon from '../common/AdaptiveIcon.vue'
 
 const platform = ref<'darwin' | 'win32'>('darwin')
 const pluginName = ref('Plugin')
+const pluginId = ref('') // 插件的实际 name（用于数据库操作，与未分离状态保持一致）
 const pluginLogo = ref<string | undefined>(undefined)
 const searchQuery = ref('')
 const subInputVisible = ref(true) // 子输入框是否可见
@@ -303,6 +304,7 @@ onMounted(async () => {
     console.log('收到标题栏初始化数据:', data)
     platform.value = data.platform
     pluginName.value = data.title || data.pluginName
+    pluginId.value = data.pluginName // 保存实际的插件 name，用于数据库读写
     pluginLogo.value = data.pluginLogo
 
     // 设置窗口标题
@@ -414,8 +416,8 @@ async function showPluginSettings(): Promise<void> {
       ? autoDetachPluginData
       : []
 
-    const isAutoKill = outKillPluginList.includes(pluginName.value)
-    const isAutoDetach = autoDetachPluginList.includes(pluginName.value)
+    const isAutoKill = outKillPluginList.includes(pluginId.value)
+    const isAutoDetach = autoDetachPluginList.includes(pluginId.value)
 
     // 显示菜单
     const menuItems = [
@@ -451,10 +453,10 @@ async function showPluginSettings(): Promise<void> {
       let updatedList = [...outKillPluginList]
       if (isAutoKill) {
         // 取消勾选
-        updatedList = updatedList.filter((name) => name !== pluginName.value)
+        updatedList = updatedList.filter((name) => name !== pluginId.value)
       } else {
         // 勾选
-        updatedList.push(pluginName.value)
+        updatedList.push(pluginId.value)
       }
       await window.ztools.dbPut('outKillPlugin', updatedList)
       console.log('已更新"退出到后台立即结束运行"配置:', updatedList)
@@ -463,10 +465,10 @@ async function showPluginSettings(): Promise<void> {
       let updatedList = [...autoDetachPluginList]
       if (isAutoDetach) {
         // 取消勾选
-        updatedList = updatedList.filter((name) => name !== pluginName.value)
+        updatedList = updatedList.filter((name) => name !== pluginId.value)
       } else {
         // 勾选
-        updatedList.push(pluginName.value)
+        updatedList.push(pluginId.value)
       }
       await window.ztools.dbPut('autoDetachPlugin', updatedList)
       console.log('已更新"自动分离为独立窗口"配置:', updatedList)
