@@ -226,6 +226,19 @@ export class InternalPluginAPI {
       return await (pluginsAPI as any).packagePlugin(pluginPath)
     })
 
+    ipcMain.handle('internal:get-plugin-memory-info', async (event, pluginPath: string) => {
+      if (!requireInternalPlugin(this.pluginManager, event)) {
+        throw new PermissionDeniedError('internal:get-plugin-memory-info')
+      }
+      try {
+        const memoryInfo = await this.pluginManager.getPluginMemoryInfo(pluginPath)
+        return { success: true, data: memoryInfo }
+      } catch (error: unknown) {
+        console.error('[Internal API] 获取内存信息失败:', error)
+        return { success: false, error: error instanceof Error ? error.message : '获取失败' }
+      }
+    })
+
     // ==================== AI 模型管理 API ====================
     ipcMain.handle('internal:ai-models-get-all', async (event) => {
       if (!requireInternalPlugin(this.pluginManager, event)) {
@@ -293,6 +306,24 @@ export class InternalPluginAPI {
         throw new PermissionDeniedError('internal:update-shortcut')
       }
       return await (settingsAPI as any).updateShortcut(shortcut)
+    })
+
+    // ==================== 应用快捷键 API ====================
+    ipcMain.handle(
+      'internal:register-app-shortcut',
+      async (event, shortcut: string, target: string) => {
+        if (!requireInternalPlugin(this.pluginManager, event)) {
+          throw new PermissionDeniedError('internal:register-app-shortcut')
+        }
+        return await (settingsAPI as any).registerAppShortcut(shortcut, target)
+      }
+    )
+
+    ipcMain.handle('internal:unregister-app-shortcut', async (event, shortcut: string) => {
+      if (!requireInternalPlugin(this.pluginManager, event)) {
+        throw new PermissionDeniedError('internal:unregister-app-shortcut')
+      }
+      return await (settingsAPI as any).unregisterAppShortcut(shortcut)
     })
 
     // ==================== 系统设置 API ====================
