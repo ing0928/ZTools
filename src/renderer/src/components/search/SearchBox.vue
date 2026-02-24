@@ -142,6 +142,11 @@
 
     <!-- 操作栏 -->
     <div ref="searchActionsRef" class="search-actions">
+      <!-- Tab 键目标提示（搜索模式下，且配置了 Tab 目标指令时显示） -->
+      <div v-if="tabTargetHint && currentView !== 'plugin' && modelValue" class="tab-target-hint">
+        <span class="tab-target-text">Go {{ tabTargetHint }}</span>
+        <span class="tab-target-key">Tab</span>
+      </div>
       <!-- 更新提示（有下载好的更新时显示） -->
       <div
         v-if="windowStore.updateDownloadInfo.hasDownloaded && !windowStore.currentPlugin"
@@ -287,6 +292,14 @@ const isDefaultAvatar = computed(() => {
 })
 
 const isPluginLoading = computed(() => windowStore.pluginLoading)
+
+// Tab 键目标指令提示文字
+const tabTargetHint = computed(() => {
+  const target = windowStore.tabTargetCommand
+  if (!target) return ''
+  const parts = target.split('/')
+  return parts.length === 2 ? parts[1] : target
+})
 
 // 截断显示的粘贴文本（从中间截断，显示头尾）
 const truncatedPastedText = computed(() => {
@@ -1421,6 +1434,37 @@ defineExpose({
   gap: 8px;
   flex-shrink: 0; /* 右侧按钮区域不允许缩小 */
   -webkit-app-region: no-drag; /* 头像区域不可拖动 */
+}
+
+/* Tab 键目标提示 */
+.tab-target-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0.45;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.tab-target-hint:hover {
+  opacity: 0.7;
+}
+
+.tab-target-text {
+  font-size: 12px;
+  color: var(--text-color);
+  font-weight: 400;
+}
+
+.tab-target-key {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-color);
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 1px 5px;
+  line-height: 1.3;
 }
 
 .update-notification {
