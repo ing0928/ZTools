@@ -212,11 +212,9 @@ export class PluginUIAPI {
       }
 
       // 发送事件到目标窗口渲染进程，设置输入框的值
+      // 渲染进程更新 searchQuery 后会通过 watch 自动触发 notifySubInputChange，无需在此重复调用
       targetWindow.webContents.send('set-sub-input-value', text)
       console.log('[PluginUI] 设置子输入框值:', text)
-
-      // 触发插件的 onChange 回调
-      this.notifySubInputChange(text, event)
 
       // 聚焦子输入框
       this.subInputFocus(event)

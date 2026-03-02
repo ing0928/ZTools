@@ -111,6 +111,7 @@ window.ztools = {
   // 移除子输入框（隐藏）
   removeSubInput: async () => {
     console.log('插件移除子输入框')
+    subInputChangeCallback = null
     return await electron.ipcRenderer.invoke('remove-sub-input')
   },
   // 设置子输入框的值
