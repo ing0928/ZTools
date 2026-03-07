@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "vue": "^3.5.13",
-    "vue-router": "^4.6.4"
+    "vue-router": "^4.6.4",
+    "@vueuse/core": "^14.2.1"
   },
   "devDependencies": {
     "@iconify/utils": "^3.1.0",
