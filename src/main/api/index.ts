@@ -34,6 +34,7 @@ import { initPluginApiDispatcher } from './plugin/pluginApiDispatcher'
 import pluginRedirectAPI from './plugin/redirect'
 import pluginScreenAPI from './plugin/screen'
 import pluginShellAPI from './plugin/shell'
+import pluginToastAPI from './plugin/toast'
 import pluginUIAPI from './plugin/ui'
 import pluginWindowAPI from './plugin/window'
 import { setupImageAnalysisAPI } from './shared/imageAnalysis'
@@ -89,6 +90,7 @@ class APIManager {
     pluginRedirectAPI.init(mainWindow, pluginManager)
     pluginFeatureAPI.init(pluginManager)
     pluginHttpAPI.init(pluginManager)
+    pluginToastAPI.init(pluginManager)
 
     // 初始化内置插件专用API
     internalPluginAPI.init(mainWindow, pluginManager)
