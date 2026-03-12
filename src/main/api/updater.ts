@@ -277,7 +277,8 @@ export class UpdaterAPI {
       const resourcesDir = path.join(contentsDir, 'Resources')
 
       if (!app.isPackaged) {
-        updaterPath = path.join(app.getAppPath(), 'src/updater/mac-arm64/ztools-updater')
+        const safeArch = process.arch === 'arm64' ? 'arm64' : 'amd64'
+        updaterPath = path.join(app.getAppPath(), `updater/mac-${safeArch}/ztools-updater`)
       } else {
         updaterPath = path.join(path.dirname(appPath), 'ztools-updater')
       }
