@@ -528,6 +528,8 @@ window.ztools = {
   // 跳转到快捷键设置
   redirectHotKeySetting: (cmdLabel) =>
     electron.ipcRenderer.sendSync('ztools-redirect-hotkey-setting', cmdLabel),
+  // 跳转到 AI 模型设置
+  redirectAiModelsSetting: () => electron.ipcRenderer.sendSync('ztools-redirect-ai-models-setting'),
   // HTTP 请求头设置
   http: {
     // 设置请求头

@@ -23,25 +23,30 @@ export class PluginRedirectAPI {
     })
 
     ipcMain.on('ztools-redirect-hotkey-setting', (event, cmdLabel: string) => {
-      try {
-        this.toSearchPage()
-        this.mainWindow?.webContents.send('ipc-launch', {
-          path: this.getSettingPluginPath(),
-          type: 'plugin',
-          featureCode: 'ui.router?router=Shortcuts',
-          name: '快捷键',
-          cmdType: 'text',
-          param: {
-            payload: cmdLabel,
-            type: 'text'
-          }
-        })
-        event.returnValue = true
-      } catch (error) {
-        console.error('[Redirect] 跳转快捷键设置失败:', error)
-        event.returnValue = false
-      }
+      event.returnValue = this.redirectToSettingPage('Shortcuts', '快捷键', cmdLabel)
     })
+
+    ipcMain.on('ztools-redirect-ai-models-setting', (event) => {
+      event.returnValue = this.redirectToSettingPage('AiModels', 'AI 模型')
+    })
+  }
+
+  private redirectToSettingPage(router: string, name: string, payload?: string): boolean {
+    try {
+      this.toSearchPage()
+      this.mainWindow?.webContents.send('ipc-launch', {
+        path: this.getSettingPluginPath(),
+        type: 'plugin',
+        featureCode: `ui.router?router=${router}`,
+        name,
+        cmdType: 'text',
+        param: payload ? { payload, type: 'text' } : undefined
+      })
+      return true
+    } catch (error) {
+      console.error(`[Redirect] 跳转${name}设置失败:`, error)
+      return false
+    }
   }
 
   /**
