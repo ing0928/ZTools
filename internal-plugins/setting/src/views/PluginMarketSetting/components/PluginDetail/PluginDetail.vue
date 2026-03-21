@@ -1753,6 +1753,5 @@ watch(
   width: 100%;
   min-height: 360px;
   border: none;
-  color-scheme: auto;
 }
 </style>
